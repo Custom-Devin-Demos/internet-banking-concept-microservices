@@ -13,7 +13,9 @@ public class UserMapper extends BaseMapper<UserEntity, User> {
         UserEntity entity = new UserEntity();
         if (dto != null) {
             BeanUtils.copyProperties(dto, entity, "accounts");
-            entity.setAccounts(bankAccountMapper.convertToEntityList(dto.getBankAccounts()));
+            if (dto.getBankAccounts() != null) {
+                entity.setAccounts(bankAccountMapper.convertToEntityList(dto.getBankAccounts()));
+            }
         }
         return entity;
     }
@@ -23,7 +25,9 @@ public class UserMapper extends BaseMapper<UserEntity, User> {
         User dto = new User();
         if (entity != null) {
             BeanUtils.copyProperties(entity, dto, "accounts");
-            dto.setBankAccounts(bankAccountMapper.convertToDtoList(entity.getAccounts()));
+            if (entity.getAccounts() != null) {
+                dto.setBankAccounts(bankAccountMapper.convertToDtoList(entity.getAccounts()));
+            }
         }
         return dto;
     }
