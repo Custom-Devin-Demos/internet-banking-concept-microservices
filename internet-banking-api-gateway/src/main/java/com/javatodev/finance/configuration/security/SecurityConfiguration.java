@@ -23,6 +23,16 @@ public class SecurityConfiguration {
                 //ALLOW USER REGISTRATION API ENDPOINT
                 exchanges.pathMatchers("/user/api/v1/bank-users/register").permitAll();
 
+                //ALLOW AGGREGATED API DOCUMENTATION (SWAGGER UI + OPENAPI SPECS)
+                exchanges.pathMatchers(
+                        "/swagger-ui.html",
+                        "/swagger-ui/**",
+                        "/v3/api-docs",
+                        "/v3/api-docs/**",
+                        "/webjars/**",
+                        "/*/v3/api-docs",
+                        "/*/v3/api-docs/**").permitAll();
+
                 //ALLOW ACTUATOR ENDPOINTS
                 exchanges.pathMatchers("/actuator/**").permitAll()
                     .pathMatchers("/user/actuator/**").permitAll()
