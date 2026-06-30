@@ -1,0 +1,35 @@
+spring:
+  application:
+    name: internet-banking-api-gateway
+  cloud:
+    config:
+      enabled: false
+    discovery:
+      enabled: false
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          # Dummy JWK set URI so the resource-server bean wires up without a real
+          # Keycloak; the URI is only resolved lazily on the first authenticated call.
+          jwk-set-uri: http://localhost:9999/realms/test/protocol/openid-connect/certs
+
+# No Eureka in tests.
+eureka:
+  client:
+    enabled: false
+    register-with-eureka: false
+    fetch-registry: false
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    urls:
+      - name: internet-banking-user-service
+        url: /user/v3/api-docs
+      - name: internet-banking-fund-transfer-service
+        url: /fund-transfer/v3/api-docs
+      - name: core-banking-service
+        url: /banking-core/v3/api-docs
+      - name: internet-banking-utility-payment-service
+        url: /utility-payment/v3/api-docs
