@@ -1,10 +1,21 @@
 package com.javatodev.finance.controller;
 
+import java.util.List;
+
+import com.javatodev.finance.exception.ErrorResponse;
+import com.javatodev.finance.model.dto.FundTransfer;
 import com.javatodev.finance.model.dto.request.FundTransferRequest;
+import com.javatodev.finance.model.dto.response.FundTransferResponse;
 import com.javatodev.finance.service.FundTransferService;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,15 +37,30 @@ public class FundTransferController {
     private final FundTransferService fundTransferService;
 
     @Operation(summary = "Send Fund Transfer", description = "Process a fund transfer request")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Fund transfer processed successfully",
+            content = @Content(schema = @Schema(implementation = FundTransferResponse.class))),
+        @ApiResponse(responseCode = "400", description = "Invalid request or transfer could not be completed",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
     @PostMapping
-    public ResponseEntity sendFundTransfer(@RequestBody FundTransferRequest fundTransferRequest) {
+    public ResponseEntity<FundTransferResponse> sendFundTransfer(
+        @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            description = "Source/destination accounts and amount to transfer", required = true)
+        @RequestBody FundTransferRequest fundTransferRequest) {
         log.info("Got fund transfer request from API {}", fundTransferRequest.toString());
         return ResponseEntity.ok(fundTransferService.fundTransfer(fundTransferRequest));
     }
 
     @Operation(summary = "Read Fund Transfers", description = "Retrieve a paginated list of fund transfers")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Fund transfers retrieved successfully",
+            content = @Content(array = @ArraySchema(schema = @Schema(implementation = FundTransfer.class)))),
+        @ApiResponse(responseCode = "400", description = "Unable to read fund transfers",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
     @GetMapping
-    public ResponseEntity readFundTransfers(Pageable pageable) {
+    public ResponseEntity<List<FundTransfer>> readFundTransfers(@ParameterObject Pageable pageable) {
         log.info("Reading fund transfers from core");
         return ResponseEntity.ok(fundTransferService.readAllTransfers(pageable));
     }

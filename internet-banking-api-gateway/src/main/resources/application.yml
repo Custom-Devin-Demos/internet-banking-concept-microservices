@@ -1,3 +1,21 @@
 spring:
   application:
     name: internet-banking-api-gateway
+
+# AGGREGATED OPENAPI / SWAGGER UI
+# A single Swagger UI served by the gateway surfaces every downstream service's
+# OpenAPI spec. Each downstream service exposes /v3/api-docs and is reachable
+# through the gateway routes (StripPrefix=1), e.g. /user/v3/api-docs -> user
+# service /v3/api-docs.
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    urls:
+      - name: internet-banking-user-service
+        url: /user/v3/api-docs
+      - name: internet-banking-fund-transfer-service
+        url: /fund-transfer/v3/api-docs
+      - name: core-banking-service
+        url: /banking-core/v3/api-docs
+      - name: internet-banking-utility-payment-service
+        url: /utility-payment/v3/api-docs
